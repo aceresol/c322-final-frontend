@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a question</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <hr color="purple">
+    <ul class="topnav">
+        <li><a  href="index.html"><img src="homeimage.png"></a></li>
+    </ul>
+
+    <form id="top">
+        <div style="text-align: center;">
+            <img src="delivery.png" alt="Header Image" width="400">
+        </div>
+        <div class="button-container">
+            <a onclick="login()" class="button">Log In</a>
+            <a onclick="login()" class="button">Sign Up</a>
+        </div>
+    </form>
+
+    <h2 style="display: flex; justify-content: space-between;" id="name"></h2>
+
+    <div style="height: 100px; background-color: white;">
+        <div class="flowers">
+            <div id="list" class="cards"></div>
+        </div>
+    </div>
+    <div id="date"></div>
+    
+
+    <h2 style="text-align: center;">Recipient</h2>
+
+    <form action="#" method="post" style="text-align: center;">
+        <label for="firstName">First Name*:</label><br>
+        <input type="text" id="firstName" name="firstName" required><br><br>
+        
+        <label for="lastName">Last Name*:</label><br>
+        <input type="text" id="lastName" name="lastName" required><br><br>
+        
+        <label for="relationship">Relationship*:</label><br>
+        <select id="relationship" name="relationship" required>
+            <option value="">Select</option>
+            <option value="Self">Self</option>
+            <option value="Friend">Friend</option>
+            <option value="Family">Family</option>
+            <option value="Other">Other</option>
+        </select><br><br>
+        
+        <label for="address">Address*:</label><br>
+        <input type="text" id="address" name="address" required>
+        <p style="color: green;">We cannot ship to PO Boxes</p>
+        <br>
+        
+        <label for="apartment">Apt./Suite:</label><br>
+        <input type="text" id="apartment" name="apartment"><br>
+        
+        <label for="city">City*:</label><br>
+        <input type="text" id="city" name="city" required><br><br>
+        
+        <label for="state">State*:</label><br>
+        <input type="text" id="state" name="state" required><br><br>
+        
+        <label for="zipCode">Zip Code*:</label><br>
+        <input type="text" id="zipCode" name="zipCode" required><br><br>
+        
+    </form>
+
+    <div style="text-align: center;">
+        <button style="background-color: darkgreen; color: white; text-align: center; align-content: center; width: 100px; height: 30px;" onclick="button()">Continue</button>
+    </div>
+<script>
+    let host = "https://c322-final-aceresol.onrender.com";
+    let curFlowerId = 1
+    let flowers = []
+    let list = document.getElementById("list")
+
+    displayTheFlowers()
+
+
+    if (window.localStorage.getItem("loggedin")) {
+        document.getElementById("top").style.display="none"
+    }
+
+
+
+    function login() {
+        window.localStorage.setItem("previous", "information.html")
+        window.location.href = "login.html"
+    }
+
+
+
+    async function find() {
+          const myHeaders = new Headers()
+          myHeaders.append("Authorization", "Bearer " + "eyJraWQiOiI4ODU3ODdiZC0wMmY3LTQwZmEtODEyOS05ODcxYTExNDE2M2EiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoic3RldmUiLCJleHAiOjE3MTQzNTUyMzYsImlhdCI6MTcxNDM1MTYzNiwic2NvcGUiOiIifQ.G4GZFUt_h-LRinetn_VxXCIKZS6reUHxBg2LneSXxgqZev6bl0nxhe5VVEoXSDe7YN4AYvdrYVVrHGtpxVsVgw4mW_mggqjvgHSJIpS7Nc4K9GqM54xX1PdSyYzmpx7YTGTZJaoF_OjJaYpcMPpbtVs4SHbxMDQeycCDOJVE1G9oAMcHil4tX9gVAjxGe4d7hqHshkAs1Pz5YUXypKVw4bL0ciLmJrCpk3C6AumNy4HrjrC6nbiGTW8ALdfU8eYUaacUaPZr7MYyCYTS1rrXH0_SteoCMZXJTIRZfWoGT8f1AQVJkNnZtGBe0bKeOG9yhTEE8wzJj0zwV0_py49urw")
+
+
+          const id = window.localStorage.getItem("inCart")
+
+          let request = {
+              method: "GET",
+              // headers: myHeaders,
+              redirect: "follow"
+          }
+
+          let response = await fetch(host + "/flowers/" + id, request)
+          let result = await response.json()
+          return result
+      }
+
+      async function displayTheFlowers() {
+        let flower = await find()
+        list.innerHTML = ""
+
+        
+        console.log(flower.id)
+        let div = document.createElement("div")
+        div.id = `${flower.id}`
+
+        // THIS WILL BE THE SELECTION OF A FLOWER
+        div.onclick = function () {
+          curFlowerId = flower.id
+          window.localStorage.setItem("selectedFlower", curFlowerId)
+          document.getElementById("cart").innerHTML = "Cart: 1"
+          window.localStorage.setItem("basket", 1)
+          window.location.href = "basket.html?flowerId=" + curFlowerId
+        }
+
+
+        const myHeaders = new Headers()
+        myHeaders.append("Authorization", "Bearer " + "eyJraWQiOiI4ODU3ODdiZC0wMmY3LTQwZmEtODEyOS05ODcxYTExNDE2M2EiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoic3RldmUiLCJleHAiOjE3MTQzNTUyMzYsImlhdCI6MTcxNDM1MTYzNiwic2NvcGUiOiIifQ.G4GZFUt_h-LRinetn_VxXCIKZS6reUHxBg2LneSXxgqZev6bl0nxhe5VVEoXSDe7YN4AYvdrYVVrHGtpxVsVgw4mW_mggqjvgHSJIpS7Nc4K9GqM54xX1PdSyYzmpx7YTGTZJaoF_OjJaYpcMPpbtVs4SHbxMDQeycCDOJVE1G9oAMcHil4tX9gVAjxGe4d7hqHshkAs1Pz5YUXypKVw4bL0ciLmJrCpk3C6AumNy4HrjrC6nbiGTW8ALdfU8eYUaacUaPZr7MYyCYTS1rrXH0_SteoCMZXJTIRZfWoGT8f1AQVJkNnZtGBe0bKeOG9yhTEE8wzJj0zwV0_py49urw")
+
+        let request = {
+          method: "GET",
+          redirect: "follow"
+        };
+
+        let response = await fetch(host + "/flowers/" + flower.id + "/image", request)
+        let result = await response.blob()
+
+        let imageURL = URL.createObjectURL(result)
+
+          div.className = "card"
+          let innerHTML = `
+
+        <img src="${imageURL}" alt="flower" style="width:100%; height:100%">
+
+          `
+        div.innerHTML = innerHTML
+        list.appendChild(div)
+
+        let cost = flower.price;
+
+        if (window.localStorage.getItem("subscription")) {
+            cost = cost-10
+        }
+
+        window.localStorage.setItem("price", cost)
+
+        // update flower name
+        let name = document.getElementById("name")
+        name.innerHTML = `
+        <div style= "margin-right:auto;">${flower.name}</div>
+        <div style= "margin-left:auto;">$${cost}</div>
+
+        `
+
+        let date = document.getElementById("date")
+        date.innerHTML = `<h4>Delivery Date</h4><p style="color:green">${window.localStorage.getItem("deliveryDate")}</p>`
+
+      }
+      function button() {
+
+        let firstName= document.getElementById("firstName").value
+        window.localStorage.setItem("firstName", firstName)
+        let lastName = document.getElementById("lastName").value
+        window.localStorage.setItem("lastName", lastName)
+        let relationship= document.getElementById("relationship").value
+        window.localStorage.setItem("relationship", relationship)
+        let address = document.getElementById("address").value
+        window.localStorage.setItem("address", address)
+        let apartment = document.getElementById("apartment").value
+        window.localStorage.setItem("apartment", apartment)
+        let city = document.getElementById("city").value
+        window.localStorage.setItem("city", city)
+        let state = document.getElementById("state").value
+        window.localStorage.setItem("state", state)
+        let zipCode = document.getElementById("zipCode").value
+        window.localStorage.setItem("zipCode", zipCode)
+
+        window.location.href = "placeorder.html"
+
+
+
+      }
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

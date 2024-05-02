@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add a question</title>
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <hr color="purple">
+    <ul class="topnav">
+      <li><a  href="index.html">
+      <li class="right"><a id="cart">Cart: 0</a></li>
+      <li class="right"><a href="login.html"></a></li>
+      <li class="right"><a >Help</a></li>
+      <li class="right"><a href="orders.html">Track Order</a></li>
+    </ul>
+    <div class="contentcenter" style="height: 400px;">
+        <div class="contentleft" style="height: 400px; background-color: white;">
+            <div class="flowers">
+                <div id="list" class="cards"></div>
+            </div>
+        </div>
+        <div class="contentright" style="height: 500px;">
+            <div id="name"  style="font-size: xx-large; text-align: center; font-weight: normal;">Flower Name</div>
+            <form>
+
+                <h3>Delivery Date*</h3>
+                <input id="date">
+                <h3>Purchasing Options</h3>
+
+            <form id="choices">
+                <input type="radio" id="option1" name="purchasing">
+                <label for="option1" name="option1" id="label1">Start a Subscription: ${cost} dollars + free shipping</label>
+                <br>
+                <p><b>Best Value:</b> up to 30% off + free shipping on subscription deliveries</p>
+                <p><b>Flexible:</b> Pick your flowers, date & recipient every month, or set it & forget it</p>
+                <p><b>No Obligations:</b> Skip as often as you like. Cancel anytime</p>
+
+
+                <br>
+
+                <input type="radio" id="option2" name="purchasing">
+                <label for="option2" name="option2" id="label2">One time purchase: ${cost+25} dollars</label><br><br>
+
+            </div>
+
+            </form>
+          
+        </div> 
+        <div style="text-align: right;">
+          <button style="background-color: rgb(1, 54, 1); color: white; height: 30px; width: 150px; " onclick="button()">Add to Basket</button>
+        </div>
+      
+    </div>
+    <script>
+      let host = "https://c322-final-aceresol.onrender.com";
+      let curFlowerId = 1
+      let flowers = []
+      let list = document.getElementById("list")
+
+      document.getElementById("cart").innerHTML = "Cart: " + window.localStorage.getItem("basket")
+      displayTheFlowers()
+
+      async function find() {
+          const myHeaders = new Headers()
+          myHeaders.append("Authorization", "Bearer " + "eyJraWQiOiI4ODU3ODdiZC0wMmY3LTQwZmEtODEyOS05ODcxYTExNDE2M2EiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoic3RldmUiLCJleHAiOjE3MTQzNTUyMzYsImlhdCI6MTcxNDM1MTYzNiwic2NvcGUiOiIifQ.G4GZFUt_h-LRinetn_VxXCIKZS6reUHxBg2LneSXxgqZev6bl0nxhe5VVEoXSDe7YN4AYvdrYVVrHGtpxVsVgw4mW_mggqjvgHSJIpS7Nc4K9GqM54xX1PdSyYzmpx7YTGTZJaoF_OjJaYpcMPpbtVs4SHbxMDQeycCDOJVE1G9oAMcHil4tX9gVAjxGe4d7hqHshkAs1Pz5YUXypKVw4bL0ciLmJrCpk3C6AumNy4HrjrC6nbiGTW8ALdfU8eYUaacUaPZr7MYyCYTS1rrXH0_SteoCMZXJTIRZfWoGT8f1AQVJkNnZtGBe0bKeOG9yhTEE8wzJj0zwV0_py49urw")
+          const urlParams = new URLSearchParams(window.location.search)
+          const id = urlParams.get('flowerId')
+
+          let request = {
+              method: "GET",
+              redirect: "follow"
+          }
+          let response = await fetch(host + "/flowers/" + id, request)
+          let result = await response.json()
+          return result
+      }
+      async function displayTheFlowers() {
+        let flower = await find()
+
+        list.innerHTML = ""
+
+      
+        console.log(flower.id)
+        let div = document.createElement("div")
+        div.id = `${flower.id}`
+
+        div.onclick = function () {
+          curFlowerId = flower.id
+          window.localStorage.setItem("selectedFlower", curFlowerId)
+          document.getElementById("cart").innerHTML = "Cart: 1"
+          window.localStorage.setItem("basket", 1)
+          window.location.href = "basket.html?flowerId=" + curFlowerId
+        }
+
+
+        const myHeaders = new Headers()
+        myHeaders.append("Authorization", "Bearer " + "eyJraWQiOiI4ODU3ODdiZC0wMmY3LTQwZmEtODEyOS05ODcxYTExNDE2M2EiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJzZWxmIiwic3ViIjoic3RldmUiLCJleHAiOjE3MTQzNTUyMzYsImlhdCI6MTcxNDM1MTYzNiwic2NvcGUiOiIifQ.G4GZFUt_h-LRinetn_VxXCIKZS6reUHxBg2LneSXxgqZev6bl0nxhe5VVEoXSDe7YN4AYvdrYVVrHGtpxVsVgw4mW_mggqjvgHSJIpS7Nc4K9GqM54xX1PdSyYzmpx7YTGTZJaoF_OjJaYpcMPpbtVs4SHbxMDQeycCDOJVE1G9oAMcHil4tX9gVAjxGe4d7hqHshkAs1Pz5YUXypKVw4bL0ciLmJrCpk3C6AumNy4HrjrC6nbiGTW8ALdfU8eYUaacUaPZr7MYyCYTS1rrXH0_SteoCMZXJTIRZfWoGT8f1AQVJkNnZtGBe0bKeOG9yhTEE8wzJj0zwV0_py49urw")
+
+        let request = {
+          method: "GET",
+          redirect: "follow"
+        };
+
+        let response = await fetch(host + "/flowers/" + flower.id + "/image", request)
+        let result = await response.blob()
+
+        window.localStorage.setItem("inCart", flower.id)
+
+        let imageURL = URL.createObjectURL(result)
+
+          div.className = "card"
+          let innerHTML = `
+
+        <img src="${imageURL}" alt="flower" style="width:100%; height:100%">
+
+          `
+        div.innerHTML = innerHTML
+        list.appendChild(div)
+        let name = document.getElementById("name")
+        name.innerHTML = `${flower.name}`
+
+        let label1 = document.getElementById("label1")
+        label1.innerHTML = `Start a Subscription: <b> ${flower.price-10} dollars + free shipping</b>`
+        let label2 = document.getElementById("label2")
+        label2.innerHTML = `One time purchase: <b>${flower.price} dollars</b>`
+
+      }
+  
+      function button() {
+        let choice1 = document.getElementById("choice1")
+        var radios = document.getElementsByName('purchasing');
+        var selectedOption = 1;
+
+        for (var i = 0; i < radios.length; i++) {
+          if (radios[i].checked) {
+            selectedOption = i;
+
+            break; 
+          }
+        }
+
+        if (selectedOption==1) {
+          localStorage.setItem("subscription", true)
+        }
+        else {
+          localStorage.setItem("subscription", false)
+        }
+
+        let date = document.getElementById("date").value
+        localStorage.setItem("deliveryDate", date)
+
+        window.location.href = 'information.html'
+
+        return false;
+      }
+
+    </script>
+
+
+  </body>
+</html>
